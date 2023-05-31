@@ -1,7 +1,16 @@
+"""
+Modbus Server Example
+
+This module demonstrates the usage of the pyModbusTCP library to create a Modbus server.
+It initializes a Modbus server, tracks the changes in coils and registers, and prints their
+statuses.
+
+Author: Adam
+Date: May 30, 2023
+"""
+
 from time import sleep
 from pyModbusTCP.server import ModbusServer
-from pyModbusTCP.client import ModbusClient
-
 
 # Constants
 HOST = "127.0.0.1"
@@ -51,7 +60,4 @@ except SystemExit:
     server.stop()
     print("Server is offline")
 
-except Exception as e:
-    print(f"An error occurred: {str(e)}")
-    server.stop()
-    print("Server is offline")
+# End of file

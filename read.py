@@ -7,7 +7,6 @@ Date: May 30, 2023
 
 from pyModbusTCP.client import ModbusClient
 
-
 # init modbus client
 C = ModbusClient(host='localhost', port=12345, auto_open=True, debug=False)
 

@@ -1,24 +1,43 @@
-from pymodbus.server.sync import StartTcpServer
-from pymodbus.datastore import ModbusSequentialDataBlock, ModbusSparseDataBlock
-from pymodbus.datastore import ModbusServerContext
+from pyModbusTCP.server import ModbusServer, DataBank
+from time import sleep
 
-# Define the number of registers and coils to simulate
-num_registers = 10  # Number of registers to simulate
-num_coils = 8  # Number of coils to simulate
+# Constants
+HOST = "127.0.0.1"
+PORT = 12346
+NUM_REGISTERS = 1000
+NUM_COILS = 1000
 
-# Create data blocks for registers and coils
-registers_block = ModbusSequentialDataBlock(0, [0] * num_registers)
-coils_block = ModbusSparseDataBlock({i: False for i in range(num_coils)})
+# Create an instance of ModbusServer
+server = ModbusServer(HOST, PORT, no_block=True)
+data_bank = DataBank(NUM_REGISTERS, NUM_COILS)
 
-# Create Modbus server context and add data blocks
-store = ModbusServerContext(slaves={
-    0x01: registers_block,
-    0x02: coils_block
-}, single=True)
+# Initialize the initial states for coils and registers
+coil_state = [False] * NUM_COILS
+register_state = [0] * NUM_REGISTERS
 
-# Define server address and port
-server_address = 'localhost'  # Server address
-server_port = 5020  # Server port (above 1024)
+try:
+    print("Start server...")
+    server.start()
+    print("Server is online")
 
-# Start Modbus TCP server
-StartTcpServer(store, address=(server_address, server_port))
+    while True:
+        # Check if any coils have changed
+        new_coil_state = data_bank.get_discrete_inputs(0, NUM_COILS)
+        for i in range(NUM_COILS):
+            if coil_state[i] != new_coil_state[i]:
+                coil_state[i] = new_coil_state[i]
+                print(f"Coil {i} has changed to {coil_state[i]}")
+
+        # Check if any registers have changed
+        new_register_state = data_bank.get_holding_registers(0, NUM_REGISTERS)
+        for i in range(NUM_REGISTERS):
+            if register_state[i] != new_register_state[i]:
+                register_state[i] = new_register_state[i]
+                print(f"Register {i} has changed to {register_state[i]}")
+
+        sleep(0.5)
+
+except:
+    print("Shutdown server...")
+    server.stop()
+    print("Server is offline")

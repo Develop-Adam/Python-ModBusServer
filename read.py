@@ -1,20 +1,28 @@
-
-import time
 from pyModbusTCP.client import ModbusClient
 
 # init modbus client
-c = ModbusClient(host='localhost', port=502, auto_open=True, debug=False)
+c = ModbusClient(host='localhost', port=12346, auto_open=True, debug=False)
 
-# main read loop
-while True:
-    # read 10 bits (= coils) at address 0, store result in coils list
-    coils_l = c.read_coils(0, 1)
+# Create a list of coil states to write
+coils = [True, True, True, True, True, False, False, False, False, False]
 
-    # if success display registers
-    if coils_l:
-        print('coil ad #0 to 1: %s' % coils_l)
-    else:
-        print('unable to read coils')
+# Write the coils starting from address 0
+address = 0
+c.write_multiple_coils(address, coils)
 
-    # sleep 2s before next polling
-    time.sleep(2)
+# Read the coils to verify the write operation
+read_coils = c.read_coils(address, len(coils))
+print(read_coils)
+
+# Specify the address of the register to write
+register_address = 0
+
+# Specify the value to write to the register
+register_value = 123
+
+# Write the value to the register
+c.write_single_register(register_address, register_value)
+
+reg_0 = c.read_holding_registers(register_address, 1)
+
+print(reg_0)

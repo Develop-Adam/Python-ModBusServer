@@ -1,28 +1,38 @@
+"""
+This module reads the coil state from a Modbus server.
+
+Author: Adam
+Date: May 30, 2023
+"""
+
 from pyModbusTCP.client import ModbusClient
 
+
 # init modbus client
-c = ModbusClient(host='localhost', port=12346, auto_open=True, debug=False)
+C = ModbusClient(host='localhost', port=12345, auto_open=True, debug=False)
 
 # Create a list of coil states to write
-coils = [True, True, True, True, True, False, False, False, False, False]
+COILS = [True]
 
 # Write the coils starting from address 0
-address = 0
-c.write_multiple_coils(address, coils)
+ADDRESS = 0
+C.write_multiple_coils(ADDRESS, COILS)
 
 # Read the coils to verify the write operation
-read_coils = c.read_coils(address, len(coils))
-print(read_coils)
+READ_COILS = C.read_coils(ADDRESS, len(COILS))
+print(READ_COILS)
 
 # Specify the address of the register to write
-register_address = 0
+REGISTER_ADDRESS = 0
 
-# Specify the value to write to the register
-register_value = 123
+# Specify the value to write to the register [ Min: 0 | Max: 65535 ]
+REGISER_VALUE = 65535
 
 # Write the value to the register
-c.write_single_register(register_address, register_value)
+C.write_single_register(REGISTER_ADDRESS, REGISER_VALUE)
 
-reg_0 = c.read_holding_registers(register_address, 1)
+REG_0 = C.read_holding_registers(REGISTER_ADDRESS, 1)
 
-print(reg_0)
+print(REG_0)
+
+# End of file

@@ -11,7 +11,7 @@ from pyModbusTCP.client import ModbusClient
 C = ModbusClient(host='localhost', port=12345, auto_open=True, debug=False)
 
 # Create a list of coil states to write
-COILS = [True]
+COILS = [False, False, False, False, False, False, False, False]
 
 # Write the coils starting from address 0
 ADDRESS = 0
@@ -25,7 +25,7 @@ print(READ_COILS)
 REGISTER_ADDRESS = 0
 
 # Specify the value to write to the register [ Min: 0 | Max: 65535 ]
-REGISER_VALUE = 65535
+REGISER_VALUE = 20000
 
 # Write the value to the register
 C.write_single_register(REGISTER_ADDRESS, REGISER_VALUE)
